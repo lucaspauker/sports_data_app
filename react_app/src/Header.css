@@ -1,0 +1,41 @@
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0px;
+  height: 16px;
+  width: 100%;
+  font-size: 24px;
+}
+
+.MuiToolbar-root {
+  min-height: 48px !important;
+}
+
+.header-container h1 {
+  font-size: 24px;
+}
+
+.icon {
+  color: white;
+}
+@media (max-width:840px)  {
+  .header-container {
+    flex-direction: column;
+    justify-content: space-around;
+  }
+  .icon {
+    margin: 0px 8px;
+  }
+}
+
+@media (max-width:481px)  {
+}
+
+.header-logo {
+  margin-right: 16px;
+  margin-bottom: 4px;
+}
+
