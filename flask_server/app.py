@@ -57,7 +57,6 @@ def index():
 @app.route("/get_hr_probs_for_day", methods=["GET"])
 def get_hr_probs_for_day():
     date = pd.Timestamp(request.args.get("date")).strftime("%Y-%m-%d")
-    print(date)
     result = list(data_collection.find({"date": date}, {"_id": 0,
                                                         "player_name": 1,
                                                         "model": 1,
@@ -65,7 +64,8 @@ def get_hr_probs_for_day():
                                                         "home_run_odds": 1,
                                                         "stats": 1,
                                                         })
-                                 .sort("home_run_odds", pymongo.DESCENDING))
+                                 .sort("home_run_odds", pymongo.DESCENDING)
+                                 .limit(100))
     def get_hr_string(i):
         if i == 0:
             return "No"
