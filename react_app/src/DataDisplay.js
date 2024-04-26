@@ -92,7 +92,7 @@ function DataDisplay({ data, error, theme }) {
   return (
     <Paper elevation={0} sx={{border: `2px solid ${theme.palette.secondary.main}`}}>
       {error && <p>{error}</p>}
-      <Box sx={{"marginLeft": "16px", "marginRight": "16px"}}>
+      {data.length > 0 && <Box sx={{"marginLeft": "16px", "marginRight": "16px"}}>
         <TextField
           label="Search by player name"
           value={searchTerm}
@@ -101,7 +101,7 @@ function DataDisplay({ data, error, theme }) {
           fullWidth
           margin="normal"
         />
-      </Box>
+      </Box>}
       {data.length > 0 ? (
         <TableContainer>
           <Table>

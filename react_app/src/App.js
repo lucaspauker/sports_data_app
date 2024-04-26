@@ -49,17 +49,17 @@ function addDays(x, days) {
 }
 
 function App() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const defaultDate = (new Date());
-  const [displayedDate, setDisplayedDate] = useState(new Date(defaultDate));
+  const defaultDate = new Date();
+  const [displayedDate, setDisplayedDate] = useState(defaultDate);
 
   const fetchData = async (date) => {
     console.log("Fetching data for", date);
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await axios.get(`http://127.0.0.1:5000/get_hr_probs_for_day`, {
+      const response = await axios.get("http://3.23.51.228/get_hr_probs_for_day", {
         params: {
           date: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
         }
@@ -80,11 +80,14 @@ function App() {
   }
 
   useEffect(() => {
-    fetchData(displayedDate)
-      .then(() => {
-        if (data.length == 0) {
-          onDateChange(addDays(displayedDate, -1));
-        }})
+    const fetchDataAndCheckDataLength = async () => {
+      await fetchData(displayedDate);
+      if (data != null && data.length === 0) {
+        onDateChange(addDays(displayedDate, -1));
+      }
+    };
+
+    fetchDataAndCheckDataLength();
   }, []);
 
   return (

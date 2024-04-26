@@ -17,7 +17,7 @@ const Header = () => {
           </Typography>
         </div>
         <div className='horizontal-box'>
-          <a target="_blank" href="https://github.com/lucaspauker/sports-genie" className='vertical-box icon'>
+          <a target="_blank" href="https://github.com/lucaspauker/home_run_modeling" className='vertical-box icon'>
             <GitHubIcon sx={{marginRight: 2}} />
           </a>
           <a target="_blank" href="https://twitter.com/lucas_pauker" className='vertical-box icon'>

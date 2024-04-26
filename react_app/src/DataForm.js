@@ -21,9 +21,14 @@ function DataForm({ date, onDateChange }) {
     onDateChange(addDays(date, -1));
   };
 
+  const isDateLast = () => {
+    console.log(date, new Date());
+    return date === new Date();
+  };
+
   return (
     <div className="horizontal-box">
-      <Button onClick={decrementDate}>Previous Day</Button>
+      <Button onClick={decrementDate}>Prev Day</Button>
       <div className="date-picker">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
