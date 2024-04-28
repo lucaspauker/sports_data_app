@@ -59,7 +59,8 @@ function App() {
     console.log("Fetching data for", date);
     setLoading(true);
     try {
-      const response = await axios.get("http://3.23.51.228/get_hr_probs_for_day", {
+      const serverName =  "127.0.0.1:5001"; //"3.23.51.228"
+      const response = await axios.get("http://" + serverName + "/get_hr_probs_for_day", {
         params: {
           date: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
         }

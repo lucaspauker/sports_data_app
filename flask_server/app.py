@@ -66,6 +66,7 @@ def get_hr_probs_for_day():
                                                         "did_hit_hr": 1,
                                                         "home_run_odds": 1,
                                                         "stats": 1,
+                                                        "odds_data": 1,
                                                         })
                                  .sort("home_run_odds", pymongo.DESCENDING))
     def get_hr_string(i):
@@ -81,6 +82,7 @@ def get_hr_probs_for_day():
                "Home run odds": probability_to_american_odds(x["home_run_odds"]),
                "Did hit HR": get_hr_string(x["did_hit_hr"]),
                "stats": x["stats"],
+               "odds_data": x["odds_data"]["data"] if "odds_data" in x else {},
                } for x in result]
 
     if result:

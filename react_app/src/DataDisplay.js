@@ -3,9 +3,10 @@ import { Box, Paper, TableSortLabel, TableContainer, Table, TableHead, TableBody
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import "./DataDisplay.css"
 
-function CustomTooltip({ dictionary }) {
+function CustomStatsTooltip({ dictionary }) {
   if (typeof dictionary === 'undefined') {
     return (
       <InfoIcon color="disabled"/>
@@ -20,6 +21,37 @@ function CustomTooltip({ dictionary }) {
         <div>
           <span style={{ fontSize: '16px', fontWeight: 'bold' }}>{key}:</span>&nbsp;
           <span style={{ fontSize: '16px' }}>{formattedValue}</span>
+        </div>
+        <br />
+      </React.Fragment>
+    );
+  });
+
+  return (
+    <Tooltip title={<div>{formattedContent}</div>}>
+      <IconButton>
+        <InfoIcon sx={{color:"gray"}}/>
+      </IconButton>
+    </Tooltip>
+  );
+}
+
+function CustomOddsTooltip({ odds }) {
+  if (typeof odds === 'undefined') {
+    return (
+      <InfoIcon color="disabled"/>
+    );
+  }
+
+  // Format odds data for display
+  const formattedContent = Object.entries(odds).map(([site, oddsData], index) => {
+    const over = oddsData.over ? `${oddsData.over}` : '---';
+    const under = oddsData.under ? `${oddsData.under}` : '---';
+    return (
+      <React.Fragment key={index}>
+        <div>
+          <span style={{ fontSize: '16px', fontWeight: 'bold' }}>{site}:</span>&nbsp;
+          <span style={{ fontSize: '16px' }}>{over}/{under}</span>
         </div>
         <br />
       </React.Fragment>
@@ -76,6 +108,30 @@ function DataDisplay({ data, error, theme }) {
     }
   });
 
+  const getBestOdds = (oddsObj) => {
+    let bestOver = {value: null, site: null};
+    let bestUnder = {value: null, site: null};
+
+    for (let site in oddsObj) {
+      if (oddsObj.hasOwnProperty(site)) {
+        let over = oddsObj[site].over;
+        let under = oddsObj[site].under;
+
+        if (over && (!bestOver.value || parseFloat(over) > parseFloat(bestOver.value))) {
+          bestOver.value = over;
+          bestOver.site = site;
+        }
+
+        if (under && (!bestUnder.value || parseFloat(under) > parseFloat(bestUnder.value))) {
+          bestUnder.value = under;
+          bestUnder.site = site;
+        }
+      }
+    }
+    return `${bestOver.value}/${bestUnder.value}`;
+}
+
+
   const emptyRows = Math.max(0, rowsPerPage - Math.min(rowsPerPage, sortedData.length - page * rowsPerPage));
   const columnOrder = ["Player name", "Model", "Home run probability", "Home run odds", "Did hit HR"];
 
@@ -119,6 +175,9 @@ function DataDisplay({ data, error, theme }) {
                   </TableCell>
                 ))}
                 <TableCell>
+                  <b>Best odds</b>
+                </TableCell>
+                <TableCell>
                   <b>Stats before game</b>
                 </TableCell>
               </TableRow>
@@ -129,8 +188,18 @@ function DataDisplay({ data, error, theme }) {
                   {columnOrder.map((key) => (
                     <TableCell key={key}>{item[key]}</TableCell>
                   ))}
+                  <TableCell key="odds_data" align="center">
+                    {Object.keys(item.odds_data).length === 0 ?
+                      "---"
+                      :
+                      <>
+                      {getBestOdds(item.odds_data)}
+                      <CustomOddsTooltip odds={item.odds_data} />
+                      </>
+                    }
+                  </TableCell>
                   <TableCell key="stats" align="center">
-                    <CustomTooltip dictionary={item.stats} />
+                    <CustomStatsTooltip dictionary={item.stats} />
                   </TableCell>
                 </TableRow>
               ))}
