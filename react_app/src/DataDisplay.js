@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Paper, TableSortLabel, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TablePagination, TextField } from '@mui/material';
+import { Typography, Box, Paper, TableSortLabel, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TablePagination, TextField } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
@@ -36,7 +36,7 @@ function CustomStatsTooltip({ dictionary }) {
   );
 }
 
-function CustomOddsTooltip({ odds }) {
+function CustomOddsTooltip({ odds, update_time, game_time }) {
   if (typeof odds === 'undefined') {
     return (
       <InfoIcon color="disabled"/>
@@ -59,7 +59,16 @@ function CustomOddsTooltip({ odds }) {
   });
 
   return (
-    <Tooltip title={<div>{formattedContent}</div>}>
+    <Tooltip title={
+      <div>
+        {formattedContent}
+          <div className="horizontal-box">
+            <span style={{ fontSize: '12px' }}>Game at {(new Date(game_time)).toLocaleTimeString()}</span><br/>
+          </div>
+          <div className="horizontal-box">
+            <span style={{ fontSize: '12px' }}>Updated at {(new Date(update_time)).toLocaleTimeString()}</span><br/><br/>
+          </div>
+      </div>}>
       <IconButton>
         <InfoIcon sx={{color:"gray"}}/>
       </IconButton>
@@ -193,8 +202,8 @@ function DataDisplay({ data, error, theme }) {
                       "---"
                       :
                       <>
-                      {getBestOdds(item.odds_data)}
-                      <CustomOddsTooltip odds={item.odds_data} />
+                      {getBestOdds(item.odds_data.data)}
+                      <CustomOddsTooltip odds={item.odds_data.data} update_time={item.odds_data.update_time} game_time={item.odds_data.game_time} />
                       </>
                     }
                   </TableCell>

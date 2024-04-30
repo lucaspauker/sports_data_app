@@ -75,14 +75,15 @@ def get_hr_probs_for_day():
         elif i == 1:
             return "Yes"
         else:
-            return "Unknown"
+            assert(i == 2)
+            return "---"
     result = [{"Player name": x["player_name"],
                "Model": x["model"],
                "Home run probability": round(x["home_run_odds"], 3),
                "Home run odds": probability_to_american_odds(x["home_run_odds"]),
                "Did hit HR": get_hr_string(x["did_hit_hr"]),
                "stats": x["stats"],
-               "odds_data": x["odds_data"]["data"] if "odds_data" in x else {},
+               "odds_data": x["odds_data"] if "odds_data" in x else {},
                } for x in result]
 
     if result:
