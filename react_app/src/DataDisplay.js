@@ -104,7 +104,7 @@ function DataDisplay({ data, error, theme }) {
 
   // Filter data based on search term
   const filteredData = data.filter(item =>
-    item["Player name"].toLowerCase().includes(searchTerm.toLowerCase())
+    item["Player"].toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const sortedData = filteredData.slice().sort((a, b) => {
@@ -117,7 +117,7 @@ function DataDisplay({ data, error, theme }) {
     }
   });
 
-  const getBestOdds = (oddsObj) => {
+  const getBestOdds = (oddsObj, fairOdds) => {
     let bestOver = {value: null, site: null};
     let bestUnder = {value: null, site: null};
 
@@ -137,12 +137,18 @@ function DataDisplay({ data, error, theme }) {
         }
       }
     }
-    return `${bestOver.value}/${bestUnder.value}`;
+    if (fairOdds < bestOver.value) {
+      return <span><mark>{bestOver.value}</mark>/{bestUnder.value}</span>
+    } else if (-1 * fairOdds < bestUnder.value) {
+      return <span>{bestOver.value}/<mark>{bestUnder.value}</mark></span>
+    } else {
+      return `${bestOver.value}/${bestUnder.value}`;
+    }
 }
 
 
   const emptyRows = Math.max(0, rowsPerPage - Math.min(rowsPerPage, sortedData.length - page * rowsPerPage));
-  const columnOrder = ["Player name", "Model", "Home run probability", "Home run odds", "Did hit HR"];
+  const columnOrder = ["Player", "Team", "Opposing Pitcher", "Model HR probability", "Model HR odds", "Did hit HR"];
 
   const createStatsString = (dictionary) => {
     let result = '';
@@ -195,14 +201,14 @@ function DataDisplay({ data, error, theme }) {
               {sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
                 <TableRow key={index}>
                   {columnOrder.map((key) => (
-                    <TableCell key={key}>{item[key]}</TableCell>
+                    item[key] ? <TableCell key={key}>{item[key]}</TableCell> : <TableCell key={key}>---</TableCell>
                   ))}
                   <TableCell key="odds_data" align="center">
                     {Object.keys(item.odds_data).length === 0 ?
                       "---"
                       :
                       <>
-                      {getBestOdds(item.odds_data.data)}
+                      {getBestOdds(item.odds_data.data, item["Home run odds"])}
                       <CustomOddsTooltip odds={item.odds_data.data} update_time={item.odds_data.update_time} game_time={item.odds_data.game_time} />
                       </>
                     }

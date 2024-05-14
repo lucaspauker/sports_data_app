@@ -62,6 +62,8 @@ def get_hr_probs_for_day():
     date = pd.Timestamp(request.args.get("date")).strftime("%Y-%m-%d")
     result = list(data_collection.find({"date": date}, {"_id": 0,
                                                         "player_name": 1,
+                                                        "opposing_pitcher": 1,
+                                                        "team_name": 1,
                                                         "model": 1,
                                                         "did_hit_hr": 1,
                                                         "home_run_odds": 1,
@@ -77,10 +79,12 @@ def get_hr_probs_for_day():
         else:
             assert(i == 2)
             return "---"
-    result = [{"Player name": x["player_name"],
+    result = [{"Player": x["player_name"],
+               "Opposing Pitcher": x["opposing_pitcher"] if "opposing_pitcher" in x else "---",
+               "Team": x["team_name"] if "team_name" in x else "---",
                "Model": x["model"],
-               "Home run probability": round(x["home_run_odds"], 3),
-               "Home run odds": probability_to_american_odds(x["home_run_odds"]),
+               "Model HR probability": round(x["home_run_odds"], 3),
+               "Model HR odds": probability_to_american_odds(x["home_run_odds"]),
                "Did hit HR": get_hr_string(x["did_hit_hr"]),
                "stats": x["stats"],
                "odds_data": x["odds_data"] if "odds_data" in x else {},
